@@ -148,19 +148,19 @@
 		
 		// Count nodes per knowledgetypes and users
 		// Used in grouping
-		for(var node in Nodes) {
-			if(!NodesPerKnowledgeType[Nodes[node].TypeName])
-				NodesPerKnowledgeType[Nodes[node].TypeName] = 0;
+	    // for(var node in Nodes) {
+	    // 		if(!NodesPerKnowledgeType[Nodes[node].TypeName])
+	    // 			NodesPerKnowledgeType[Nodes[node].TypeName] = 0;
 			
-			NodesPerKnowledgeType[Nodes[i].TypeName]++;
+	    // 		NodesPerKnowledgeType[Nodes[i].TypeName]++;
 			
-			if(!NodesPerUser[Nodes[node].Username]) {
-				NodesPerUser[Nodes[node].Username] = 0;
-				Users.push(Nodes[node].Username);
-			}
+	    // 		if(!NodesPerUser[Nodes[node].Username]) {
+	    // 			NodesPerUser[Nodes[node].Username] = 0;
+	    // 			Users.push(Nodes[node].Username);
+	    // 		}
 			
-			NodesPerUser[Nodes[node].Username]++;
-		}
+	    // 		NodesPerUser[Nodes[node].Username]++;
+	    // 	}
 		
 		// Set grouping controls
 		$('#grouping-discussion').click(function() { ChangeGrouping('discussion', this); });
