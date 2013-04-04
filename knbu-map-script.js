@@ -11,6 +11,7 @@
 	var Nodes = [];
 	var NodesWaiting = [];
 	var KnowledgeTypes = [];
+
 	
 	var NodeCount = 0;
 	var NodesPerKnowledgeType = [];
@@ -74,27 +75,27 @@
 		Nodes[0] = main;
 		//And make its position static
 		main.Static = true;
-		//Loop through the list
-		IterateChildren($('#data'), 1, main);
+		// recursively loop through the list
+		nonrec_IterateChildren($('#data'), 1, main);
+	    
 		
-		
-		for(var i in Nodes) { 
-			Nodes[i].SetParents();
+		// for(var i in Nodes) { 
+		// 	Nodes[i].SetParents();
 			
-			//Get timestamps for the first and the last nodes
-			//Used for sorting nodes by time
-			if(!FirstNodeTime)
-				FirstNodeTime = Nodes[i].Timestamp;
-			else if(FirstNodeTime > Nodes[i].Timestamp)
-				FirstNodeTime = Nodes[i].Timestamp;
+		// 	//Get timestamps for the first and the last nodes
+		// 	//Used for sorting nodes by time
+		// 	if(!FirstNodeTime)
+		// 		FirstNodeTime = Nodes[i].Timestamp;
+		// 	else if(FirstNodeTime > Nodes[i].Timestamp)
+		// 		FirstNodeTime = Nodes[i].Timestamp;
 				
-			if(!LastNodeTime)
-				LastNodeTime = Nodes[i].Timestamp;
-			else if(LastNodeTime < Nodes[i].Timestamp)
-				LastNodeTime = Nodes[i].Timestamp;
+		// 	if(!LastNodeTime)
+		// 		LastNodeTime = Nodes[i].Timestamp;
+		// 	else if(LastNodeTime < Nodes[i].Timestamp)
+		// 		LastNodeTime = Nodes[i].Timestamp;
 				
-			NodeCount++;
-		}
+		// 	NodeCount++;
+		// }
 		
 		$('#legend > ul > li').each(function() {
 			KnowledgeTypes.push($(this).text());
@@ -250,6 +251,25 @@
 			requestPositionsCalculating = true;
 	}
 
+    function bg_uls_extract(list_head) {
+	for (var o in list_head.children()) {
+	    if (o.is('ul')) {
+		bg_uls.push(o);
+		bg_uls(list_head);
+	    } else if (o.is('li')) {
+		bg_uls (list_head);
+	    }
+	}
+    }
+
+    function bg_order_handle(list_head) {
+	
+    }
+
+
+    function nonrec_IterateChildren(list_, level, parent_) {
+	IterateChildren(list_, level, parent_);
+    }
 	function IterateChildren(list, level, parent) {
 		if(list.is('ul')) {
 			list.children('li').each(function(i) {
@@ -281,13 +301,42 @@
 
 				Nodes[$(this).attr('data-id')] = main;
 				$(this).children('ul').each(function() { IterateChildren($(this), level + 1, main); });
+			    main.SetParents();
+			    if (!FirstNodeTime) {
+				FirstNodeTime = main.Timestamp;
+			    } else {
+				if (FirstNodeTime > main.Timestamp) {
+				    FirstNodeTime = main.Timestamp;
+				}
+			    }
+			    
+			    if (!LastNodeTime) {
+				LastNodeTime = main.Timestamp;
+			    } else {
+				if (LastNodeTime < main.Timestamp) {
+				    LastNodeTime = main.Timestamp;
+				}
+			    }	
+			    NodeCount++;
+
+			    if(!NodesPerKnowledgeType[main.TypeName])
+				NodesPerKnowledgeType[main.TypeName] = 0;
+			    
+			    NodesPerKnowledgeType[main.TypeName]++;
+			    
+			    if(!NodesPerUser[main.Username]) {
+				NodesPerUser[main.Username] = 0;
+				Users.push(main.Username);
+			    }
+			    
+			    NodesPerUser[main.Username]++;
 			});
 		}
 	}
 
 	function CalculatePositions() {
 		
-		// Add nodes that are waiting to be added
+		// Add nodes that e waiting to be added
 		// Can't add in the middle of a loop
 		for(var i = 0; i < NodesWaiting.length; i++)
 			Nodes[NodesWaiting[i].ID] = NodesWaiting[i];
@@ -876,5 +925,5 @@
 	
 	/* Initialize module when document is ready */
 	$(function() { Init(); });
-	
 }(jQuery));
+
